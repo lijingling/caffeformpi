@@ -1,0 +1,53 @@
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /ssd/lijingling/resnet_MSRA/caffe-mpi/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec1037191867/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec1037191867.dir/build.make CMakeFiles/cmTryCompileExec1037191867.dir/build
+make[1]: Entering directory `/ssd/lijingling/resnet_MSRA/caffe-mpi/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /ssd/lijingling/resnet_MSRA/caffe-mpi/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec1037191867.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec1037191867.dir/CheckSymbolExists.c.o   -c /ssd/lijingling/resnet_MSRA/caffe-mpi/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTryCompileExec1037191867
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1037191867.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTryCompileExec1037191867.dir/CheckSymbolExists.c.o  -o cmTryCompileExec1037191867 -rdynamic 
+CMakeFiles/cmTryCompileExec1037191867.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+make[1]: Leaving directory `/ssd/lijingling/resnet_MSRA/caffe-mpi/build/CMakeFiles/CMakeTmp'
+make[1]: *** [cmTryCompileExec1037191867] Error 1
+make: *** [cmTryCompileExec1037191867/fast] Error 2
+
+File /ssd/lijingling/resnet_MSRA/caffe-mpi/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /ssd/lijingling/resnet_MSRA/caffe-mpi/build/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec720112351/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec720112351.dir/build.make CMakeFiles/cmTryCompileExec720112351.dir/build
+make[1]: Entering directory `/ssd/lijingling/resnet_MSRA/caffe-mpi/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /ssd/lijingling/resnet_MSRA/caffe-mpi/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec720112351.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTryCompileExec720112351.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-2.8/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec720112351
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec720112351.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTryCompileExec720112351.dir/CheckFunctionExists.c.o  -o cmTryCompileExec720112351 -rdynamic -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+make[1]: Leaving directory `/ssd/lijingling/resnet_MSRA/caffe-mpi/build/CMakeFiles/CMakeTmp'
+make[1]: *** [cmTryCompileExec720112351] Error 1
+make: *** [cmTryCompileExec720112351/fast] Error 2
+
+

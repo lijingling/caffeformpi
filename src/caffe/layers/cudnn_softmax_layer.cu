@@ -1,0 +1,61 @@
+#ifdef USE_CUDNN
+#include <algorithm>
+#include <cfloat>
+#include <vector>
+
+#include "thrust/device_vector.h"
+
+#include "caffe/layer.hpp"
+#include "caffe/util/math_functions.hpp"
+#include "caffe/vision_layers.hpp"
+
+namespace caffe {
+
+template <typename Dtype>
+void CuDNNSoftmaxLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+    const vector<Blob<Dtype>*>& top) {
+  int count = bottom[0]->count();
+  const Dtype* bottom_data = bottom[0]->gpu_data();
+  Dtype* top_data = top[0]->mutable_gpu_data();
+  if(this->temprature_ != Dtype(1)) {
+    Dtype* tempratured_bottom_data = tempratured_bottom_.mutable_gpu_data();
+    Dtype t_reciprocal = Dtype(1) / this->temprature_;
+    caffe_copy(count, bottom_data, tempratured_bottom_data);
+    caffe_gpu_scal(count, t_reciprocal, tempratured_bottom_data);
+    bottom_data = tempratured_bottom_data;
+  }
+  CUDNN_CHECK(cudnnSoftmaxForward(handle_, algorithm_,
+        CUDNN_SOFTMAX_MODE_CHANNEL,
+        cudnn::dataType<Dtype>::one,
+        bottom_desc_, bottom_data,
+        cudnn::dataType<Dtype>::zero,
+        top_desc_, top_data));
+}
+
+template <typename Dtype>
+void CuDNNSoftmaxLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
+    const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom) {
+  if (propagate_down[0]) {
+    int count = bottom[0]->count();
+    const Dtype* top_data = top[0]->gpu_data();
+    const Dtype* top_diff = top[0]->gpu_diff();
+    const Dtype* bottom_data = bottom[0]->gpu_data();
+    Dtype* bottom_diff = bottom[0]->mutable_gpu_diff();
+
+    CUDNN_CHECK(cudnnSoftmaxBackward(handle_, algorithm_,
+          CUDNN_SOFTMAX_MODE_CHANNEL,
+          cudnn::dataType<Dtype>::one,
+          top_desc_, top_data, top_desc_, top_diff,
+          cudnn::dataType<Dtype>::zero,
+          bottom_desc_, bottom_diff));
+    if(this->temprature_ != Dtype(1)) {
+      Dtype t_reciprocal = Dtype(1) / this->temprature_;
+      caffe_gpu_scal(count, t_reciprocal, bottom_diff);
+    }
+  }
+}
+
+INSTANTIATE_LAYER_GPU_FUNCS(CuDNNSoftmaxLayer);
+
+}  // namespace caffe
+#endif
